@@ -1,0 +1,58 @@
+using UnityEngine;
+
+public class Movement : MonoBehaviour
+{
+    private CharacterController controller;
+    private Vector3 playerVelocity;
+    private bool groundedPlayer;
+    public float jumpHeight = 1.0f;
+    public float gravityValue = -9.81f;
+
+    public float playerSpeed;
+    public float runSpeed = 10f;
+    public float baseSpeed = 2.0f;
+
+
+
+    void Start()
+    {
+        playerSpeed = baseSpeed;
+        controller = GetComponent<CharacterController>();
+    }
+
+
+    void Update()
+    {
+        groundedPlayer = controller.isGrounded;
+
+        if (groundedPlayer && playerVelocity.y < 0)
+            playerVelocity.y = -1f; // Чтобы не завис в воздухе
+
+        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        move = transform.TransformDirection(move); // Чтобы движение шло относительно направления
+
+        controller.Move(move * Time.deltaTime * playerSpeed);
+
+        // Прыжок
+        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        {
+
+            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+        }
+
+        //спринт
+        if (Input.GetButtonDown("Fire3") && groundedPlayer)
+        {
+            playerSpeed += runSpeed;
+        }
+        if (Input.GetButtonUp("Fire3") && groundedPlayer)
+        {
+            playerSpeed = baseSpeed;
+        }
+
+
+        // Применение гравитации
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        controller.Move(playerVelocity * Time.deltaTime);
+    }
+}
