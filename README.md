@@ -1,2 +1,2 @@
 # Unity-scripts-for-the-game
-Third-person camera for Unity game
+All scripts that are included in the game
